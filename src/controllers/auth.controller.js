@@ -92,19 +92,17 @@ const logoutController= async(req,res)=>{
 
 
 }
-const getmeController= async(req,res)=>{
-    const user=await userModel.findOne({
-        _id:req.user.id,
-    })
-   return res.status(200).json({
-      message:"User details fetched successfully",
-       user:{
-        id:user._id,
-        username:user.username,
-        email:user.emailId,
-       }
-    })
+const getmeController = async (req, res) => {
+  return res.status(200).json({
+    message: "User details fetched successfully",
+    user: {
+      id: req.user.id,
+      username: req.user.username,
+      email: req.user.email,
+    }
+  })
 }
+
 
 
 export default {registerController,loginController,logoutController,getmeController};
