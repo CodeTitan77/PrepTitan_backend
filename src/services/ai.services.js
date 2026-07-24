@@ -73,11 +73,11 @@ async function invokeGeminiAi(){
     const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY,
 });
-  const res = await ai.models.generateContent({
-  
-model: "gemini-2.0-flash",
-  contents: "Hello gemini! What is an interview ?" 
-})
-    console.log(res.text);
+ const interaction = await ai.interactions.create({
+   model: "gemini-3.1-flash-lite",
+  input: "what is an interview, answer in 5 words?",
+});
+console.log(interaction.output_text);
+    
 }
 export default invokeGeminiAi;

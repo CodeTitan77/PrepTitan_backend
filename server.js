@@ -5,7 +5,7 @@ import authRouter from './src/routes/auth.routes.js';
 import invokeGeminiAi from "./src/services/ai.services.js";
 dotenv.config();
 dbConnect();
-// invokeGeminiAi();
+invokeGeminiAi();
 app.use("/api/auth",authRouter);
 app.listen(3000,()=>{
     console.log("Server running at port number 3000");
