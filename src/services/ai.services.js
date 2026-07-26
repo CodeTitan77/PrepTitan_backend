@@ -66,18 +66,27 @@ const interviewReportSchema = {
   }
 }
 const interviewSchema = z.fromJSONSchema(interviewReportSchema);
+const generateInterviewReport = async ({ resume, selfDescription, jobDescription }) => {
+  const client = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  const prompt = `Generate an interview report for a candidate with the following details:
+                    Resume: ${resume}
+                    Self Description: ${selfDescription}
+                    Job Description: ${jobDescription}`;
 
-
-
-async function invokeGeminiAi(){
-    const ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY,
+ const response = await client.models.generateContent({
+  model: "gemini-3.1-flash-lite",
+  contents: prompt + "\n\nReturn only valid JSON strictly matching the schema. Do not repeat words or add extra text.",
+  config: {
+    responseMimeType: "application/json",
+    responseSchema: interviewReportSchema
+  }
 });
- const interaction = await ai.interactions.create({
-   model: "gemini-3.1-flash-lite",
-  input: "what is an interview, answer in 5 words?",
-});
-console.log(interaction.output_text);
-    
+ 
+const text = response.candidates[0].content.parts[0].text;
+const report = interviewSchema.parse(JSON.parse(text));
+  // console.log(report);
+  return report;
 }
-export default invokeGeminiAi;
+
+export default generateInterviewReport;
+
