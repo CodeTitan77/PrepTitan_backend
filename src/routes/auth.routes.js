@@ -8,6 +8,7 @@ authRouter.post("/register",authController.registerController);
 authRouter.post("/login",authController.loginController);
 authRouter.get("/logout",authController.logoutController);
 authRouter.get("/get-me",authMiddleware.authUser,authController.getmeController);
+interviewRouter.get("/:interviewReportId/resume-pdf", authMiddleware.authUser, interviewController.generateResumePdfController)
 
 export default authRouter;
 
