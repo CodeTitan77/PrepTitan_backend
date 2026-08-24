@@ -6,14 +6,21 @@ import interviewReportModel from "../models/interviewReport.model.js";
  const generateInterviewController=async (req,res)=>{
     
     const resumeContent = await (new PDFParse(Uint8Array.from(req.file.buffer))).getText();
+    const gitUserName= req.gitUserName;
+    const gitHubContext = await axios.get(`https://api.github.com/users/${gitUserName}/repos`);
+    const gitSummary = gitHubContext.data
+  .filter(repo => !repo.fork && repo.description !== null)
+  .map(repo => `- ${repo.name} (${repo.language}): ${repo.description}`)
+  .join('\n')
     const { selfDescription, jobDescription } = req.body
 
     const interViewReportByAi = await generateInterviewReport({
         resume: resumeContent.text,
         selfDescription,
-        jobDescription
+        jobDescription,
+        gitSummary
     })
-    // console.log(interViewReportByAi);
+    
    const interviewReport = await interviewReportModel.create({
     user: req.user.id,
     resume: resumeContent.text,  
